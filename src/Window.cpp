@@ -53,6 +53,7 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
         if((difftime(time_now, this->getInitTs())) == 1) {
             this->setInitTs(time_now);
             this->setFramerate(frames);
+            this->m_vFrametimes.push_back(frames);
             frames = 0;
             renderWindow->setTitle("Gravity Simulator | FPS : " + std::to_string(this->getFramerate()) + " | Objects : " + std::to_string(this->getObjectsSize()));
             
@@ -77,7 +78,7 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
             }
         }
 
-        this->m_dDrawer.draw(&deltaClock);
+        this->m_dDrawer.draw(&deltaClock, &m_vFrametimes);
 
         frames++;
     }

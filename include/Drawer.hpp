@@ -11,7 +11,7 @@ class Drawer {
     public:
         Drawer(sf::RenderWindow*, std::vector<Object>*, std::string);
         Drawer() = default;
-        void draw(sf::Clock*);
+        void draw(sf::Clock*, std::vector<float>*);
 
         sf::Font getFont(void);
         void setFontFromFile(std::string);

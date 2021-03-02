@@ -6,6 +6,7 @@
 #include "Drawer.hpp"
 
 class Window {
+    std::vector<float> m_vFrametimes = std::vector<float>();
     short m_sFramerate;
     std::vector<Object>* m_vObjects;
     sf::RenderWindow* m_rRenderWindow;

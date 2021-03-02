@@ -10,8 +10,10 @@
 #include "IMGUI_SFML/imgui-SFML.h"
 
 #include <iostream>
+#include <vector>
 
 #define MAX_COLOR 255
+#define OBJECT
 
 static char objectNameBuffer[10];
 static float objectMass;
@@ -24,11 +26,11 @@ Drawer::Drawer(sf::RenderWindow* renderWindow, std::vector<Object>* objects, std
     this->font.loadFromFile(fontPath);
 }
 
-void Drawer::draw(sf::Clock* deltaClock) {
+void Drawer::draw(sf::Clock* deltaClock, std::vector<float>* frametimes) {
+    ImGui::SFML::Update(*this->m_rRenderWindow, deltaClock->restart());
+    /* Object Creator GUI */
     {
-        ImGui::SFML::Update(*this->m_rRenderWindow, deltaClock->restart());
-
-        ImGui::Begin("Object creator");
+        ImGui::Begin("Object Creator");
         ImGui::InputText("Name", objectNameBuffer, IM_ARRAYSIZE(objectNameBuffer));
         ImGui::SliderFloat("Mass", &objectMass, 1.f, 1000.f);
         ImGui::SliderInt("Diameter", &objectDiameter, 1, 50);
@@ -40,6 +42,23 @@ void Drawer::draw(sf::Clock* deltaClock) {
         }
         ImGui::End();
     }
+
+    /* Objects Manager GUI */
+    {
+        ImGui::Begin("Objects Manager");
+        // vector to array
+        ImGui::PlotLines("Frame Times", frametimes->data(), frametimes->size());
+        ImGui::Text("Objects - %d", this->m_vObjects->size());
+        ImGui::BeginChild("Scrolling");
+        for(size_t i = 0; i < (this->m_vObjects->size()); i++) {
+            Object object = this->m_vObjects->at(i);
+            if(ImGui::Button(object.getName().c_str())) {
+                this->m_vObjects->erase(this->m_vObjects->begin() + i);
+            };
+        }
+        ImGui::EndChild();
+        ImGui::End();
+    }
     
     this->m_rRenderWindow->clear();
     for(size_t i = 0; i < this->m_vObjects->size(); i++) {
@@ -48,6 +67,10 @@ void Drawer::draw(sf::Clock* deltaClock) {
         // drawing the object
         sf::CircleShape shape(object.getDiameter());
         shape.setFillColor(object.getColor());
+        sf::Color outlineColor = object.getColor();
+        outlineColor.a /= 2;
+        shape.setOutlineColor(outlineColor);
+        shape.setOutlineThickness(object.getMass() / 10);
         shape.setPosition(objectVec.getX(), objectVec.getY());
         this->m_rRenderWindow->draw(shape);
         // drawing name of the object
