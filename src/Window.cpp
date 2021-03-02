@@ -13,7 +13,7 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
     // setting initts
     this->m_tInitTs = time(NULL);
     // init drawer
-    Drawer drawer(renderWindow, objects, FONT_PATH);
+    this->m_dDrawer = Drawer(renderWindow, objects, FONT_PATH);
     
     size_t frames = 0;
     while (renderWindow->isOpen())
@@ -34,7 +34,7 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
                 renderWindow->close();
         }
 
-        drawer.draw();
+        this->m_dDrawer.draw();
 
         frames++;
     }

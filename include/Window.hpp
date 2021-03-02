@@ -3,11 +3,13 @@
 #include <vector>
 #include <Object.hpp>
 #include <time.h>
+#include <Drawer.hpp>
 
 class Window {
     short m_sFramerate;
     std::vector<Object>* m_vObjects;
     sf::RenderWindow* m_rRenderWindow;
+    Drawer m_dDrawer;
     time_t m_tInitTs;
 
     public: 

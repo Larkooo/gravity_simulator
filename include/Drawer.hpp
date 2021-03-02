@@ -9,6 +9,7 @@ class Drawer {
     sf::Font font;
     public:
         Drawer(sf::RenderWindow*, std::vector<Object>*, std::string);
+        Drawer() = default;
         void draw(void);
 
         sf::Font getFont(void);
