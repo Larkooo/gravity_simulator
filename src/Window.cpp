@@ -48,6 +48,11 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
     size_t frames = 0;
     while (renderWindow->isOpen())
     {
+        // sort objects by z axis  
+        std::sort(objects->begin(), objects->end(), [](Object o1, Object o2) {
+            return (o1.getPosition().z < o2.getPosition().z);
+        });
+
         // fps counter
         time_t time_now = time(NULL);
         if((difftime(time_now, this->getInitTs())) == 1) {
@@ -55,12 +60,12 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
             this->setFramerate(frames);
             this->m_vFrametimes.push_back(frames);
             frames = 0;
-            renderWindow->setTitle("Gravity Simulator | FPS : " + std::to_string(this->getFramerate()) + " | Objects : " + std::to_string(this->getObjectsSize()));
+            renderWindow->setTitle("Gravity Simulator | FPS : " + std::to_string(this->getFramerate()) + " | Objects : " + std::to_string(this->getObjectsSize()));
             
             {   // update discord rpc
                 dRpc.state = "Gravity SIM";
                 char buffer[128];
-                sprintf(buffer, "FPS : %f | Objects : %o", this->getFramerate(), this->getObjectsSize());
+                sprintf(buffer, "FPS : %n | Objects : %o", this->getFramerate(), this->getObjectsSize());
                 dRpc.details = buffer;
                 dRpc.largeImageKey = "sardge";
                 dRpc.instance = 0;

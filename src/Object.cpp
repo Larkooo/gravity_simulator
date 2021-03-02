@@ -1,11 +1,12 @@
 #include "Object.hpp"
 #include <string>
-#include "Vector2.hpp"
 #include "SFML/Graphics.hpp"
+#include <cmath>
+#include "Calculations.h"
 
 size_t Object::s_lCount = 0;
 
-Object::Object(std::string name, Vector2 pos, int mass, short diameter, sf::Color color) {
+Object::Object(std::string name, sf::Vector3f pos, float mass, short diameter, sf::Color color) {
     this->m_sName = name;
     this->m_vPos = pos;
     this->m_nMass = mass;
@@ -19,9 +20,22 @@ std::string Object::getName() {
     return this->m_sName;
 }
 
-Vector2 Object::getPosition() {
+sf::Vector3f Object::getPosition() {
     return this->m_vPos;
 }
+
+void Object::setPosition(sf::Vector3f newPosition) {
+    this->m_vPos = newPosition;
+}
+
+sf::Vector3f Object::getVelocity() {
+    return this->m_vVelocity;
+}
+
+void Object::setVelocity(sf::Vector3f velocity) {
+    this->m_vVelocity = velocity;
+}
+
 
 int Object::getMass() {
     return this->m_nMass;
@@ -33,4 +47,16 @@ sf::Color Object::getColor() {
 
 unsigned short Object::getDiameter() {
     return this->m_iDiameter;
+}
+
+sf::Vector3f Object::gravitationalForceTo(Object* object) {
+    // get distance between objects
+    float directDistance;
+    {
+        sf::Vector3f distVec = object->getPosition() - this->getPosition();
+        // use pythagore for vector3
+        directDistance = std::sqrt(std::pow(distVec.x, 2) + std::pow(distVec.y, 2) + std::pow(distVec.z, 2));
+    }
+    const float gravitationalForce = (this->getMass() * object->getMass() * calculations::GRAVITATIONAL_CONSTANT) / std::pow(directDistance, 2);
+    return gravitationalForce;
 }

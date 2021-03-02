@@ -1,7 +1,6 @@
 #include "SFML/Graphics.hpp"
 #include "Object.hpp"
 #include <vector>
-#include "Vector2.hpp"
 #include <string>
 #include <time.h>
 #include <iostream>
@@ -15,12 +14,13 @@
 
 int main()
 {
-    std::vector<Object> objects = {Object("lol", Vector2(500, 500), 500, 100, sf::Color::Blue), Object("yes", Vector2(300, 200), 50, 10, sf::Color::Blue), Object("no", Vector2(1000, 50), 500, 500, sf::Color::Blue)};
+    std::vector<Object> objects = {Object("lol", sf::Vector3f(500, 500, 1), 200, 1, sf::Color::Blue), Object("yes", sf::Vector3f(300, 200, 50), 50, 1, sf::Color::Blue), Object("no", sf::Vector3f(1000, 50, 100), 500, 1, sf::Color::Blue)};
 
 
     sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_HEIGHT, WINDOW_WIDTH), TITLE);
 
     sf::RenderWindow* pRenderWindow = &renderWindow;
+    //pRenderWindow->setView(sf::View(sf::Vector2f(350.f, 300.f), sf::Vector2f(1000.f, 1000.f)));
     Window window(pRenderWindow, &objects);
 
     return 0;

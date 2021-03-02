@@ -8,9 +8,9 @@
                 "-g",
                 "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\main.cpp",
                 "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\Object.cpp",
-                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\Vector2.cpp",
                 "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\Window.cpp",
                 "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\Drawer.cpp",
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\Calculations.cpp",
                 // IMGUI
                 "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\IMGUI\\imgui.cpp",
                 "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\IMGUI\\imgui_widgets.cpp",
