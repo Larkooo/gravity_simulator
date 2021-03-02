@@ -9,10 +9,14 @@
 #include "IMGUI/imgui.h"
 #include "IMGUI_SFML/imgui-SFML.h"
 
+#include <iostream>
+
+#define MAX_COLOR 255
+
 static char objectNameBuffer[10];
 static float objectMass;
 static int objectDiameter;
-static float objectColor;
+static float objectColor[3] = {0.f, 0.f, 1.f};
 
 Drawer::Drawer(sf::RenderWindow* renderWindow, std::vector<Object>* objects, std::string fontPath) {
     this->m_rRenderWindow = renderWindow;
@@ -26,16 +30,17 @@ void Drawer::draw(sf::Clock* deltaClock) {
 
         ImGui::Begin("Object creator");
         ImGui::InputText("Name", objectNameBuffer, IM_ARRAYSIZE(objectNameBuffer));
-        ImGui::SliderFloat("Mass", &objectMass, 0.f, 1000.f);
-        ImGui::SliderInt("Diameter", &objectDiameter, 0, 50);
-        ImGui::ColorPicker3("Color", &objectColor);
+        ImGui::SliderFloat("Mass", &objectMass, 1.f, 1000.f);
+        ImGui::SliderInt("Diameter", &objectDiameter, 1, 50);
+        ImGui::ColorPicker3("Color", objectColor);
 
         if(ImGui::Button("Create object")) {
-            
+            Object obj(objectNameBuffer, Vector2(rand() % this->m_rRenderWindow->getSize().x, rand() % this->m_rRenderWindow->getSize().y), objectMass, objectDiameter, sf::Color(objectColor[0] * MAX_COLOR, objectColor[1] * MAX_COLOR, objectColor[2] * MAX_COLOR, MAX_COLOR));
+            this->m_vObjects->push_back(obj);
         }
         ImGui::End();
     }
-
+    
     this->m_rRenderWindow->clear();
     for(size_t i = 0; i < this->m_vObjects->size(); i++) {
         Object object = this->m_vObjects->at(i);
