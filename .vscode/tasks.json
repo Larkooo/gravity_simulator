@@ -11,9 +11,18 @@
                 "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\Vector2.cpp",
                 "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\Window.cpp",
                 "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\Drawer.cpp",
+                // IMGUI
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\IMGUI\\imgui.cpp",
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\IMGUI\\imgui_widgets.cpp",
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\IMGUI\\imgui_draw.cpp",
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\IMGUI\\imgui_tables.cpp",
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\src\\IMGUI\\imgui-SFML.cpp",
+
                 "-o",
-                "bin\\${fileBasenameNoExtension}.exe",
+                "bin\\gravity_sim.exe",
                 "-IC:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\include",
+                "-IC:\\Users\\Larko\\Desktop\\development\\cpp_projects\\libs\\glfw\\include",
+                "-LC:\\Users\\Larko\\Desktop\\development\\cpp_projects\\libs\\glfw\\lib",
                 "-LC:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\lib",
                 "-lopenal32",
                 "-lsfml-main",
@@ -21,7 +30,11 @@
                 "-lsfml-graphics",
                 "-lsfml-window",
                 "-lsfml-network",
-                "-lsfml-audio"
+                "-lsfml-audio",
+                "-ldiscord-rpc",
+                //"-lglfw3",
+                //"-lgdi32",
+                "-lopengl32"
             ],
             "options": {
                 "cwd": "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator"

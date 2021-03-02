@@ -1,8 +1,8 @@
 #pragma once
 #include <stdint.h>
-#include <Vector2.hpp>
+#include "Vector2.hpp"
 #include <string>
-#include <SFML/Graphics.hpp>
+#include "SFML/Graphics.hpp"
 
 class Object {
     std::string m_sName;

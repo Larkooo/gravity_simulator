@@ -1,7 +1,7 @@
-#include <Object.hpp>
+#include "Object.hpp"
 #include <string>
-#include <Vector2.hpp>
-#include <SFML/Graphics.hpp>
+#include "Vector2.hpp"
+#include "SFML/Graphics.hpp"
 
 size_t Object::s_lCount = 0;
 

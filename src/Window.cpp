@@ -1,10 +1,18 @@
-#include <Window.hpp>
+#include "Window.hpp"
 #include <vector>
-#include <Object.hpp>
+#include "Object.hpp"
 #include <time.h>
-#include <Drawer.hpp>
+#include "Drawer.hpp"
+#include <iostream>
+#include "discord_rpc.h"
+#include <cstring>
+#include "SFML/System/Clock.hpp"
+
+#include "IMGUI/imgui.h"
+#include "IMGUI_SFML/imgui-SFML.h"
 
 #define FONT_PATH "./assets/fonts/vcr.ttf"
+#define APP_ID "787791190690496542"
 
 Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
     this->m_rRenderWindow = renderWindow;
@@ -14,7 +22,29 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
     this->m_tInitTs = time(NULL);
     // init drawer
     this->m_dDrawer = Drawer(renderWindow, objects, FONT_PATH);
-    
+
+    // imgui
+    ImGui::SFML::Init(*renderWindow);
+
+    // init discord
+    DiscordEventHandlers dEventHandlers;
+    memset(&dEventHandlers, 0, sizeof(dEventHandlers));
+    Discord_Initialize(APP_ID, &dEventHandlers, 1, NULL);
+
+    DiscordRichPresence dRpc;
+    memset(&dRpc, 0, sizeof(dRpc));
+    {   
+        dRpc.startTimestamp = this->getInitTs();
+        dRpc.state = "Gravity SIM";
+        char buffer[128];
+        sprintf(buffer, "FPS : %f | Objects : %o", 0, this->getObjectsSize());
+        dRpc.details = buffer;
+        dRpc.largeImageKey = "sardge";
+        dRpc.instance = 0;
+        Discord_UpdatePresence(&dRpc);
+    }
+
+    sf::Clock deltaClock;
     size_t frames = 0;
     while (renderWindow->isOpen())
     {
@@ -24,20 +54,34 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
             this->setInitTs(time_now);
             this->setFramerate(frames);
             frames = 0;
-            renderWindow->setTitle("Gravity Simulator | FPS : " + std::to_string(this->getFramerate()));
+            renderWindow->setTitle("Gravity Simulator | FPS : " + std::to_string(this->getFramerate()) + " | Objects : " + std::to_string(this->getObjectsSize()));
+            
+            {   // update discord rpc
+                dRpc.state = "Gravity SIM";
+                char buffer[128];
+                sprintf(buffer, "FPS : %f | Objects : %o", this->getFramerate(), this->getObjectsSize());
+                dRpc.details = buffer;
+                dRpc.largeImageKey = "sardge";
+                dRpc.instance = 0;
+                Discord_UpdatePresence(&dRpc); 
+            }
         }
         
+
         sf::Event event;
         while (renderWindow->pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            ImGui::SFML::ProcessEvent(event);
+            if (event.type == sf::Event::Closed) {
                 renderWindow->close();
+            }
         }
 
-        this->m_dDrawer.draw();
+        this->m_dDrawer.draw(&deltaClock);
 
         frames++;
     }
+    ImGui::SFML::Shutdown();
 }
 
 Window::~Window(void) {

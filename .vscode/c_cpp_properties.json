@@ -4,7 +4,9 @@
             "name": "Win32",
             "includePath": [
                 "include",
-                "src"
+                "src",
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\libs\\glfw\\include",
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\libs\\glfw\\lib"
             ],
             "defines": [
                 "_DEBUG",

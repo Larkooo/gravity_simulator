@@ -8,7 +8,7 @@
             "name": "g++.exe - Build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\bin\\main.exe",
+            "program": "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\gravity_simulator\\bin\\gravity_sim.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

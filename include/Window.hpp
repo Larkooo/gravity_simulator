@@ -1,9 +1,9 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include "SFML/Graphics.hpp"
 #include <vector>
-#include <Object.hpp>
+#include "Object.hpp"
 #include <time.h>
-#include <Drawer.hpp>
+#include "Drawer.hpp"
 
 class Window {
     short m_sFramerate;
