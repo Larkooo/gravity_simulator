@@ -21,8 +21,8 @@ float calculations::Q_rsqrt(float number)
 	return y;
 }
 
-sf::Vector3f calculations::acceleration(sf::Vector3f force, float mass) {
-    return sf::Vector3f() * (force / mass);
+sf::Vector3f calculations::acceleration(float force, float mass) {
+    return sf::Vector3f(1,1,1) * (force / mass);
 }
 
 // Compares two objects by their z value 

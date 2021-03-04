@@ -14,6 +14,7 @@
 #include "Calculations.h"
 
 #define MAX_COLOR 255
+#define TIME_MULTIPLIER 1
 
 static char objectNameBuffer[10];
 static float objectMass;
@@ -66,13 +67,13 @@ void Drawer::draw(sf::Clock* deltaClock, std::vector<float>* frametimes) {
         this->m_rRenderWindow->clear();
         for(size_t i = 0; i < this->m_vObjects->size(); i++) {
             Object object = this->m_vObjects->at(i);
-            sf::Vector3f objectVec = object.getPosition();
+            sf::Vector3f objectPos = object.getPosition();
             /* Object */
             {
                 /* Calculations */
                 {
                     // get sum of forces applied to object
-                    sf::Vector3f forces;
+                    float forces = 0;
                     for(size_t n = 0; n < this->m_vObjects->size(); n++) {
                         if(n == i) continue;
                         forces += object.gravitationalForceTo(&this->m_vObjects->at(n));
@@ -80,10 +81,14 @@ void Drawer::draw(sf::Clock* deltaClock, std::vector<float>* frametimes) {
                     
                     // acceleration
                     sf::Vector3f acceleration = calculations::acceleration(forces, object.getMass());
+                    std::cout << acceleration.x << std::endl;
 
                     // velocity
-                    object.setVelocity(acceleration * 50.f);
-                    
+                    sf::Vector3f velocity = object.getVelocity() + (acceleration * (float)(deltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER));
+                    object.setVelocity(velocity);
+                    sf::Vector3f newPos = objectPos + (velocity * (float)(deltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER));
+                    object.setPosition(newPos);
+                    objectPos = newPos;
                 }
 
                 sf::CircleShape shape(object.getDiameter());
@@ -93,14 +98,14 @@ void Drawer::draw(sf::Clock* deltaClock, std::vector<float>* frametimes) {
                 shape.setOutlineColor(outlineColor);
                 shape.setOutlineThickness(object.getMass() / 10);
                 // z is used by drawing the objects in a specific order
-                shape.setPosition(objectVec.x, objectVec.y);
+                shape.setPosition(objectPos.x, objectPos.y);
                 this->m_rRenderWindow->draw(shape);
             }
 
             /* Object alias */
             {
                 sf::Text name(object.getName(), this->font, 10);
-                name.setPosition(objectVec.x, objectVec.y - 10);
+                name.setPosition(objectPos.x, objectPos.y - 10);
                 this->m_rRenderWindow->draw(name);
             }
         }

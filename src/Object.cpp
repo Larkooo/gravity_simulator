@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include <cmath>
 #include "Calculations.h"
+#include <iostream>
 
 size_t Object::s_lCount = 0;
 
@@ -36,6 +37,13 @@ void Object::setVelocity(sf::Vector3f velocity) {
     this->m_vVelocity = velocity;
 }
 
+sf::Vector3f Object::getAcceleration() {
+    return this->m_vAcceleration;
+}
+
+void Object::setAcceleration(sf::Vector3f acceleration) {
+    this->m_vAcceleration = acceleration;
+}
 
 int Object::getMass() {
     return this->m_nMass;
@@ -49,14 +57,14 @@ unsigned short Object::getDiameter() {
     return this->m_iDiameter;
 }
 
-sf::Vector3f Object::gravitationalForceTo(Object* object) {
+float Object::gravitationalForceTo(Object* object) {
     // get distance between objects
     float directDistance;
     {
         sf::Vector3f distVec = object->getPosition() - this->getPosition();
         // use pythagore for vector3
         directDistance = std::sqrt(std::pow(distVec.x, 2) + std::pow(distVec.y, 2) + std::pow(distVec.z, 2));
+        //std::cout << directDistance << std::endl;
     }
-    const float gravitationalForce = (this->getMass() * object->getMass() * calculations::GRAVITATIONAL_CONSTANT) / std::pow(directDistance, 2);
-    return gravitationalForce;
+    return (this->getMass() * object->getMass() * calculations::GRAVITATIONAL_CONSTANT) / std::pow(directDistance, 2);
 }

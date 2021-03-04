@@ -65,7 +65,7 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
             {   // update discord rpc
                 dRpc.state = "Gravity SIM";
                 char buffer[128];
-                sprintf(buffer, "FPS : %n | Objects : %o", this->getFramerate(), this->getObjectsSize());
+                sprintf(buffer, "FPS : %f | Objects : %o", this->getFramerate(), this->getObjectsSize());
                 dRpc.details = buffer;
                 dRpc.largeImageKey = "sardge";
                 dRpc.instance = 0;
