@@ -5,7 +5,7 @@
 #include "SFML/System/Vector3.hpp"
 
 
-// function took from quake 2, fast inverse square root 
+// function took from quake 3, fast inverse square root 
 float calculations::Q_rsqrt(float number)
 {
 	long i;
