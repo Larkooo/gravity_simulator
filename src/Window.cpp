@@ -48,6 +48,8 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
     size_t frames = 0;
     while (renderWindow->isOpen())
     {
+        
+        
         // sort objects by z axis  
         std::sort(objects->begin(), objects->end(), [](Object o1, Object o2) {
             return (o1.getPosition().z < o2.getPosition().z);

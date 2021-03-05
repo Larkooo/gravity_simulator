@@ -15,6 +15,7 @@ class Object {
         sf::Vector3f m_vPos;
         sf::Vector3f m_vVelocity;
         sf::Vector3f m_vAcceleration;
+        bool m_bDeath = false;
 
         Object(std::string name, sf::Vector3f position, sf::Vector3f velocity, float mass, short diameter, sf::Color color);
 
@@ -34,6 +35,7 @@ class Object {
         sf::Color getColor(void);
 
         sf::Vector3f gravitationalForceTo(Object* object);
+        void destroyObject();
 
 
 };

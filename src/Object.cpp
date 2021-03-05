@@ -60,7 +60,20 @@ unsigned short Object::getDiameter() {
 
 sf::Vector3f Object::gravitationalForceTo(Object* object) {
     sf::Vector3f distVec = object->getPosition() - this->getPosition();
+    {
+        float directDistance = std::sqrt((distVec.x * distVec.x) + (distVec.y * distVec.y) + (distVec.z * distVec.z));
+        // biggest object
+        bool biggerThan = this->getMass() > object->getMass();
+        if(directDistance < (biggerThan ? this->getDiameter() : object->getDiameter())) {
+            biggerThan ? object->m_bDeath = true : this->m_bDeath = true;
+            return sf::Vector3f(0,0,0);
+        }
+    }
     float gmm = calculations::GRAVITATIONAL_CONSTANT * this->getMass() * object->getMass();
     float r = std::pow(std::pow(distVec.x,2) + std::pow(distVec.y,2) + std::pow(distVec.z,2), 1.5);
     return sf::Vector3f(gmm * distVec.x / r, gmm * distVec.y / r, gmm * distVec.z / r);
+}
+
+void Object::destroyObject() {
+    this->~Object();
 }
