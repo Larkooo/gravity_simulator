@@ -15,6 +15,8 @@
 
 #define MAX_COLOR 255
 #define TIME_MULTIPLIER 0.0001
+// lower is bigger 
+#define SCALE 10
 
 static char objectNameBuffer[10];
 static float objectMass;
@@ -85,7 +87,7 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
                     // velocity
                     object.m_vVelocity += (acceleration * (float)(pDeltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER));
                     //object.setVelocity(velocity);
-                    object.m_vPos += (object.m_vVelocity * (float)(pDeltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER)) / (float)10;
+                    object.m_vPos += (object.m_vVelocity * (float)(pDeltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER)) / (float)SCALE // reduce the scale
                     //object.setPosition(newPos);                    
                 }
                 sf::CircleShape shape(object.getDiameter());
