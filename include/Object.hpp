@@ -33,7 +33,7 @@ class Object {
         unsigned short getDiameter(void);
         sf::Color getColor(void);
 
-        float gravitationalForceTo(Object* object);
+        sf::Vector3f gravitationalForceTo(Object* object);
 
 
 };

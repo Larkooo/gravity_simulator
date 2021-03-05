@@ -72,7 +72,7 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
                 /* Calculations */
                 {
                     // get sum of forces applied to object
-                    float forces = 0;
+                    sf::Vector3f forces;
                     for(size_t n = 0; n < pObjects->size(); n++) {
                         // ignore if object is itself
                         if(n == i) continue;
@@ -81,12 +81,11 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
                     
                     // acceleration
                     sf::Vector3f acceleration = calculations::acceleration(forces, object.getMass());
-                    printf("%f", acceleration.x);
 
                     // velocity
                     object.m_vVelocity += (acceleration * (float)(pDeltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER));
                     //object.setVelocity(velocity);
-                    object.m_vPos += (object.m_vVelocity * (float)(pDeltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER));
+                    object.m_vPos += (object.m_vVelocity * (float)(pDeltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER)) / (float)10;
                     //object.setPosition(newPos);                    
                 }
                 sf::CircleShape shape(object.getDiameter());
@@ -103,7 +102,7 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
             /* Object alias */
             {
                 sf::Text name(object.getName(), this->font, 10);
-                name.setPosition(object.m_vPos.x, object.m_vPos.y - 10);
+                name.setPosition(object.m_vPos.x, (object.m_vPos.y - 10));
                 this->m_rRenderWindow->draw(name);
             }
             i++;

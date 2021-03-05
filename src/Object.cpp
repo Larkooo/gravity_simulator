@@ -58,14 +58,12 @@ unsigned short Object::getDiameter() {
     return this->m_iDiameter;
 }
 
-float Object::gravitationalForceTo(Object* object) {
-    // get distance between objects
-    float directDistance;
-    {
+sf::Vector3f Object::gravitationalForceTo(Object* object) {
+
         sf::Vector3f distVec = object->getPosition() - this->getPosition();
-        // use pythagore for vector3
-        directDistance = std::sqrt(std::pow(distVec.x, 2) + std::pow(distVec.y, 2) + std::pow(distVec.z, 2));
-        //std::cout << directDistance << std::endl;
-    }
-    return (calculations::GRAVITATIONAL_CONSTANT * this->getMass() * object->getMass()) / std::pow(directDistance, 2);
+
+        float gmm = calculations::GRAVITATIONAL_CONSTANT * this->getMass() * object->getMass();
+        float r = std::pow(std::pow(distVec.x,2) + std::pow(distVec.y,2) + std::pow(distVec.z,2), 1.5);
+        return sf::Vector3f(gmm * distVec.x / r, gmm * distVec.y / r, gmm * distVec.z / r);
+
 }
