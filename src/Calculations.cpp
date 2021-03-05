@@ -4,23 +4,19 @@
 #include <iostream>
 #include "SFML/System/Vector3.hpp"
 
-
-// function took from quake 3, fast inverse square root 
-float calculations::Q_rsqrt(float number)
+// function took from quake 3, fast inverse square root // modified to work on modern c++
+float calculations::Q_rsqrt( float number )
 {
-	long i;
-	float x2, y;
-	const float threehalfs = 1.5F;
-
-	x2 = number * 0.5F;
-	y  = number;
-	i  = * ( long * ) &y;                       // evil floating point bit level hacking
-	i  = 0x5f3759df - ( i >> 1 );               // what the fuck? 
-	y  = * ( float * ) &i;
-	y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-//	y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
-
-	return y;
+    static_assert(std::numeric_limits<float>::is_iec559, 
+                  "fast inverse square root requires IEEE-comliant 'float'");
+    static_assert(sizeof(float)==sizeof(std::uint32_t), 
+                  "fast inverse square root requires 'float' to be 32-bit");
+    float x2 = number * 0.5F, y = number;
+    std::uint32_t i;
+    memcpy(&i, &y, sizeof(float));
+    i  = 0x5f3759df - ( i >> 1 );
+    memcpy(&y, &i, sizeof(float));
+    return y * ( 1.5F - ( x2 * y * y ) );
 }
 
 sf::Vector3f calculations::acceleration(float force, float mass) {
