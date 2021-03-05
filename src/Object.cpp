@@ -60,6 +60,8 @@ unsigned short Object::getDiameter() {
 
 sf::Vector3f Object::gravitationalForceTo(Object* object) {
     sf::Vector3f distVec = object->getPosition() - this->getPosition();
+    // tweak to prevent objects from propulsing themselves 
+    // order object's death when it collides with a bigger object
     {
         float directDistance = std::sqrt((distVec.x * distVec.x) + (distVec.y * distVec.y) + (distVec.z * distVec.z));
         // biggest object
