@@ -59,11 +59,8 @@ unsigned short Object::getDiameter() {
 }
 
 sf::Vector3f Object::gravitationalForceTo(Object* object) {
-
-        sf::Vector3f distVec = object->getPosition() - this->getPosition();
-
-        float gmm = calculations::GRAVITATIONAL_CONSTANT * this->getMass() * object->getMass();
-        float r = std::pow(std::pow(distVec.x,2) + std::pow(distVec.y,2) + std::pow(distVec.z,2), 1.5);
-        return sf::Vector3f(gmm * distVec.x / r, gmm * distVec.y / r, gmm * distVec.z / r);
-
+    sf::Vector3f distVec = object->getPosition() - this->getPosition();
+    float gmm = calculations::GRAVITATIONAL_CONSTANT * this->getMass() * object->getMass();
+    float r = std::pow(std::pow(distVec.x,2) + std::pow(distVec.y,2) + std::pow(distVec.z,2), 1.5);
+    return sf::Vector3f(gmm * distVec.x / r, gmm * distVec.y / r, gmm * distVec.z / r);
 }
