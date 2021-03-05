@@ -14,22 +14,21 @@
 #include "Calculations.h"
 
 #define MAX_COLOR 255
-#define TIME_MULTIPLIER 1
+#define TIME_MULTIPLIER 0.0001
 
 static char objectNameBuffer[10];
 static float objectMass;
 static int objectDiameter;
 static float objectColor[3] = {0.f, 0.f, 1.f};
 
-Drawer::Drawer(sf::RenderWindow* renderWindow, std::vector<Object>* objects, std::string fontPath) {
+Drawer::Drawer(sf::RenderWindow* renderWindow, std::string fontPath) {
     this->m_rRenderWindow = renderWindow;
-    this->m_vObjects = objects;
     this->font.loadFromFile(fontPath);
 }
 
-void Drawer::draw(sf::Clock* deltaClock, std::vector<float>* frametimes) {
+void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::vector<Object>* pObjects) {
     {
-        ImGui::SFML::Update(*this->m_rRenderWindow, deltaClock->restart());
+        ImGui::SFML::Update(*this->m_rRenderWindow, pDeltaClock->restart());
         /* Object Creator GUI */
         {
             ImGui::Begin("Object Creator");
@@ -39,8 +38,8 @@ void Drawer::draw(sf::Clock* deltaClock, std::vector<float>* frametimes) {
             ImGui::ColorPicker3("Color", objectColor);
 
             if(ImGui::Button("Create object")) {
-                Object obj(objectNameBuffer, sf::Vector3f(rand() % this->m_rRenderWindow->getSize().x, rand() % this->m_rRenderWindow->getSize().y, rand() % 100), objectMass, objectDiameter, sf::Color(objectColor[0] * MAX_COLOR, objectColor[1] * MAX_COLOR, objectColor[2] * MAX_COLOR, MAX_COLOR));
-                this->m_vObjects->push_back(obj);
+                Object obj(objectNameBuffer, sf::Vector3f(rand() % this->m_rRenderWindow->getSize().x, rand() % this->m_rRenderWindow->getSize().y, rand() % 100), sf::Vector3f(0,0,0), objectMass, objectDiameter, sf::Color(objectColor[0] * MAX_COLOR, objectColor[1] * MAX_COLOR, objectColor[2] * MAX_COLOR, MAX_COLOR));
+                pObjects->push_back(obj);
             }
             ImGui::End();
         }
@@ -49,13 +48,13 @@ void Drawer::draw(sf::Clock* deltaClock, std::vector<float>* frametimes) {
         {
             ImGui::Begin("Objects Manager");
             // vector to array
-            ImGui::PlotLines("Frame Times", frametimes->data(), frametimes->size());
-            ImGui::Text("Objects - %d", this->m_vObjects->size());
+            ImGui::PlotLines("Frame Times", pFrametimes->data(), pFrametimes->size());
+            ImGui::Text("Objects - %d", pObjects->size());
             ImGui::BeginChild("Scrolling");
-            for(size_t i = 0; i < (this->m_vObjects->size()); i++) {
-                Object object = this->m_vObjects->at(i);
+            for(size_t i = 0; i < (pObjects->size()); i++) {
+                Object object = pObjects->at(i);
                 if(ImGui::Button(object.getName().c_str())) {
-                    this->m_vObjects->erase(this->m_vObjects->begin() + i);
+                    pObjects->erase(pObjects->begin() + i);
                 };
             }
             ImGui::EndChild();
@@ -65,32 +64,31 @@ void Drawer::draw(sf::Clock* deltaClock, std::vector<float>* frametimes) {
     
     {
         this->m_rRenderWindow->clear();
-        for(size_t i = 0; i < this->m_vObjects->size(); i++) {
-            Object object = this->m_vObjects->at(i);
-            sf::Vector3f objectPos = object.getPosition();
+        int i = 0;
+        for(auto& object : *pObjects) {
+            //printf("%i - X : %f Y : %f Z : %f\n", 1, object.m_vPos.x, object.m_vPos.y, object.m_vPos.z);
             /* Object */
             {
                 /* Calculations */
                 {
                     // get sum of forces applied to object
                     float forces = 0;
-                    for(size_t n = 0; n < this->m_vObjects->size(); n++) {
+                    for(size_t n = 0; n < pObjects->size(); n++) {
+                        // ignore if object is itself
                         if(n == i) continue;
-                        forces += object.gravitationalForceTo(&this->m_vObjects->at(n));
+                        forces += object.gravitationalForceTo(&pObjects->at(n));
                     }
                     
                     // acceleration
                     sf::Vector3f acceleration = calculations::acceleration(forces, object.getMass());
-                    std::cout << acceleration.x << std::endl;
+                    printf("%f", acceleration.x);
 
                     // velocity
-                    sf::Vector3f velocity = object.getVelocity() + (acceleration * (float)(deltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER));
-                    object.setVelocity(velocity);
-                    sf::Vector3f newPos = objectPos + (velocity * (float)(deltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER));
-                    object.setPosition(newPos);
-                    objectPos = newPos;
+                    object.m_vVelocity += (acceleration * (float)(pDeltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER));
+                    //object.setVelocity(velocity);
+                    object.m_vPos += (object.m_vVelocity * (float)(pDeltaClock->getElapsedTime().asSeconds() * TIME_MULTIPLIER));
+                    //object.setPosition(newPos);                    
                 }
-
                 sf::CircleShape shape(object.getDiameter());
                 shape.setFillColor(object.getColor());
                 sf::Color outlineColor = object.getColor();
@@ -98,16 +96,17 @@ void Drawer::draw(sf::Clock* deltaClock, std::vector<float>* frametimes) {
                 shape.setOutlineColor(outlineColor);
                 shape.setOutlineThickness(object.getMass() / 10);
                 // z is used by drawing the objects in a specific order
-                shape.setPosition(objectPos.x, objectPos.y);
+                shape.setPosition(object.m_vPos.x, object.m_vPos.y);
                 this->m_rRenderWindow->draw(shape);
             }
 
             /* Object alias */
             {
                 sf::Text name(object.getName(), this->font, 10);
-                name.setPosition(objectPos.x, objectPos.y - 10);
+                name.setPosition(object.m_vPos.x, object.m_vPos.y - 10);
                 this->m_rRenderWindow->draw(name);
             }
+            i++;
         }
         ImGui::SFML::Render(*this->m_rRenderWindow);
         this->m_rRenderWindow->display();

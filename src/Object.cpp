@@ -7,9 +7,10 @@
 
 size_t Object::s_lCount = 0;
 
-Object::Object(std::string name, sf::Vector3f pos, float mass, short diameter, sf::Color color) {
+Object::Object(std::string name, sf::Vector3f pos, sf::Vector3f velocity, float mass, short diameter, sf::Color color) {
     this->m_sName = name;
     this->m_vPos = pos;
+    this->m_vVelocity = velocity;
     this->m_nMass = mass;
     this->m_iDiameter = diameter;
     this->m_eColor = color;
@@ -66,5 +67,5 @@ float Object::gravitationalForceTo(Object* object) {
         directDistance = std::sqrt(std::pow(distVec.x, 2) + std::pow(distVec.y, 2) + std::pow(distVec.z, 2));
         //std::cout << directDistance << std::endl;
     }
-    return (this->getMass() * object->getMass() * calculations::GRAVITATIONAL_CONSTANT) / std::pow(directDistance, 2);
+    return (calculations::GRAVITATIONAL_CONSTANT * this->getMass() * object->getMass()) / std::pow(directDistance, 2);
 }

@@ -21,7 +21,7 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
     // setting initts
     this->m_tInitTs = time(NULL);
     // init drawer
-    this->m_dDrawer = Drawer(renderWindow, objects, FONT_PATH);
+    this->m_dDrawer = Drawer(renderWindow, FONT_PATH);
 
     // imgui
     ImGui::SFML::Init(*renderWindow);
@@ -83,7 +83,7 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
             }
         }
 
-        this->m_dDrawer.draw(&deltaClock, &m_vFrametimes);
+        this->m_dDrawer.draw(&deltaClock, &m_vFrametimes, m_vObjects);
 
         frames++;
     }

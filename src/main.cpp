@@ -14,7 +14,11 @@
 
 int main()
 {
-    std::vector<Object> objects = {Object("lol", sf::Vector3f(500, 500, 1), 200, 1, sf::Color::Blue), Object("yes", sf::Vector3f(300, 200, 50), 50, 1, sf::Color::Blue), Object("no", sf::Vector3f(1000, 50, 100), 500, 1, sf::Color::Blue)};
+    std::vector<Object> objects = {
+        Object("lol", sf::Vector3f(500, 500, 1), sf::Vector3f(0,0,0), 200, 1, sf::Color::Blue), 
+        Object("yes", sf::Vector3f(300, 200, 50), sf::Vector3f(0,0,0), 50, 1, sf::Color::Red), 
+        Object("no", sf::Vector3f(1000, 50, 100), sf::Vector3f(0,0,0), 500, 1, sf::Color::Yellow)
+        };
 
 
     sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_HEIGHT, WINDOW_WIDTH), TITLE);
