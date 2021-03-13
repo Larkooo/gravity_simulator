@@ -7,12 +7,12 @@
 
 size_t Object::s_lCount = 0;
 
-Object::Object(std::string name, sf::Vector3f pos, sf::Vector3f velocity, float mass, short diameter, sf::Color color) {
+Object::Object(std::string name, sf::Vector3f pos, sf::Vector3f velocity, float mass, uint16_t radius, sf::Color color) {
     this->m_sName = name;
     this->m_vPos = pos;
     this->m_vVelocity = velocity;
     this->m_nMass = mass;
-    this->m_iDiameter = diameter;
+    this->m_nRadius = radius;
     this->m_eColor = color;
 
     ++Object::s_lCount;
@@ -46,7 +46,7 @@ void Object::setAcceleration(sf::Vector3f acceleration) {
     this->m_vAcceleration = acceleration;
 }
 
-int Object::getMass() {
+float Object::getMass() {
     return this->m_nMass;
 }
 
@@ -54,20 +54,39 @@ sf::Color Object::getColor() {
     return this->m_eColor;
 } 
 
-unsigned short Object::getDiameter() {
-    return this->m_iDiameter;
+uint16_t Object::getRadius() {
+    return this->m_nRadius;
 }
 
-sf::Vector3f Object::gravitationalForceTo(Object* object) {
-    sf::Vector3f distVec = object->getPosition() - this->getPosition();
+uint32_t Object::getDiameter() {
+    return this->m_nRadius * 2;
+}
+
+sf::Vector3f Object::gravitationalForceTo(Object* object, float* scale) {
+    sf::Vector3f distVec = (object->getPosition() - this->getPosition())/* * *scale*/;
     // tweak to prevent objects from propulsing themselves 
     // order object's death when it collides with a bigger object
     {
         float directDistance = std::sqrt((distVec.x * distVec.x) + (distVec.y * distVec.y) + (distVec.z * distVec.z));
         // biggest object
-        bool biggerThan = this->getMass() > object->getMass();
-        if(directDistance < (biggerThan ? this->getDiameter() : object->getDiameter())) {
-            biggerThan ? object->m_bDeath = true : this->m_bDeath = true;
+        bool biggerThan = this->getMass() >= object->getMass();
+        //std::printf("%f\n", directDistance);
+        // ugly fix to prevent objects from deleting themselves, only for now
+        if(biggerThan && (directDistance <= ((this->getRadius() + object->getRadius()) / *scale))) {
+            //std::printf("%f\n", directDistance);
+            std::printf("this - X : %f Y : %f Z : %f    object - X : %f Y : %f Z : %f\n", this->m_vPos.x, this->m_vPos.y, this->m_vPos.z, object->m_vPos.x, object->m_vPos.y, object->m_vPos.z);
+            //biggerThan ? object->m_bDeath = true : this->m_bDeath = true;
+            sf::Vector3f newVelocity = ((this->m_vVelocity * this->m_nMass) + (object->m_vVelocity * object->m_nMass)) / (this->m_nMass + object->m_nMass);
+            //if(biggerThan) {
+                this->m_nMass += object->m_nMass;
+                this->m_vVelocity = newVelocity;
+                object->m_bDeath = true;
+            /*} else {
+                this->m_bDeath = true;
+                object->m_nMass += object->m_nMass;
+                object->m_vVelocity = newVelocity;
+            }*/
+            //this->m_vAcceleration = sf::Vector3f(0,0,0);
             return sf::Vector3f(0,0,0);
         }
     }

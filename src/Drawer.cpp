@@ -22,7 +22,7 @@ float scale = 10;
 
 char objectNameBuffer[10];
 float objectMass;
-int objectDiameter;
+int objectRadius;
 float objectColor[3] = {0.f, 0.f, 1.f};
 
 Drawer::Drawer(sf::RenderWindow* renderWindow, std::string fontPath) {
@@ -38,11 +38,11 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
             ImGui::Begin("Object Creator");
             ImGui::InputText("Name", objectNameBuffer, IM_ARRAYSIZE(objectNameBuffer));
             ImGui::SliderFloat("Mass", &objectMass, 1.f, 1000.f);
-            ImGui::SliderInt("Diameter", &objectDiameter, 1, 50);
+            ImGui::SliderInt("Radius", &objectRadius, 1, 50);
             ImGui::ColorPicker3("Color", objectColor);
 
             if(ImGui::Button("Create object")) {
-                Object obj(objectNameBuffer, sf::Vector3f(rand() % this->m_rRenderWindow->getSize().x, rand() % this->m_rRenderWindow->getSize().y, rand() % 100), sf::Vector3f(0,0,0), objectMass, objectDiameter, sf::Color(objectColor[0] * MAX_COLOR, objectColor[1] * MAX_COLOR, objectColor[2] * MAX_COLOR, MAX_COLOR));
+                Object obj(objectNameBuffer, sf::Vector3f(rand() % this->m_rRenderWindow->getSize().x, rand() % this->m_rRenderWindow->getSize().y, rand() % 100), sf::Vector3f(0,0,0), objectMass, objectRadius, sf::Color(objectColor[0] * MAX_COLOR, objectColor[1] * MAX_COLOR, objectColor[2] * MAX_COLOR, MAX_COLOR));
                 pObjects->push_back(obj);
             }
             ImGui::End();
@@ -68,7 +68,7 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
         /* Simulation GUI */
         {
             ImGui::Begin("Simulation");
-            ImGui::SliderFloat("Time Multiplier", &timeMultiplier, 1.f, 100000.f);
+            ImGui::SliderFloat("Time Multiplier", &timeMultiplier, 1.f, 30000.f);
             ImGui::SliderFloat("Scale", &scale, 1.f, 1000.f);
             ImGui::End();
         }
@@ -79,8 +79,11 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
         int i = 0;
         for(auto& object : *pObjects) {
             // remove objects that will die
-            if(object.m_bDeath) pObjects->erase(pObjects->begin() + i);
-            //printf("%i - X : %f Y : %f Z : %f\n", 1, object.m_vPos.x, object.m_vPos.y, object.m_vPos.z);
+            if(object.m_bDeath) {
+                pObjects->erase(pObjects->begin() + i);
+                continue;
+            }
+            //printf("%i - X : %f Y : %f Z : %f\n", i, object.m_vPos.x, object.m_vPos.y, object.m_vPos.z);
             /* Object */
             {
                 /* Calculations */
@@ -89,8 +92,9 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
                     sf::Vector3f forces;
                     for(size_t n = 0; n < pObjects->size(); n++) {
                         // ignore if object is itself
-                        if(n == i) continue;
-                        forces += object.gravitationalForceTo(&pObjects->at(n));
+                        Object* otherObj = &pObjects->at(n);
+                        if(n == i || otherObj->m_bDeath) continue;
+                        forces += object.gravitationalForceTo(otherObj, &scale);
                     }
                     
                     // acceleration
@@ -98,17 +102,17 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
                     //if(acceleration.x < 1 & acceleration.y < 1 & acceleration.z < 1) pObjects->erase(pObjects->begin() + i);
 
                     // velocity
-                    object.m_vVelocity += (acceleration * (float)(pDeltaClock->getElapsedTime().asSeconds() / timeMultiplier));
+                    object.m_vVelocity += ((acceleration * (float)(pDeltaClock->getElapsedTime().asSeconds()) / timeMultiplier));
                     //object.setVelocity(velocity);
-                    object.m_vPos += (object.m_vVelocity * (float)(pDeltaClock->getElapsedTime().asSeconds() / timeMultiplier)) / (float)scale; // reduce the scale
+                    object.m_vPos += ((object.m_vVelocity * (float)(pDeltaClock->getElapsedTime().asSeconds()) / timeMultiplier)) /*/ scale*/; // reduce the scale
                     //object.setPosition(newPos);                    
                 }
-                sf::CircleShape shape(object.getDiameter());
+                sf::CircleShape shape((object.getRadius()) / scale);
                 shape.setFillColor(object.getColor());
                 sf::Color outlineColor = object.getColor();
                 outlineColor.a /= 2;
                 shape.setOutlineColor(outlineColor);
-                shape.setOutlineThickness(object.getMass() / 50);
+                shape.setOutlineThickness((object.getMass() / 50) / scale);
                 // z is used by drawing the objects in a specific order
                 shape.setPosition(object.m_vPos.x, object.m_vPos.y);
                 this->m_rRenderWindow->draw(shape);
@@ -120,6 +124,7 @@ void Drawer::draw(sf::Clock* pDeltaClock, std::vector<float>* pFrametimes, std::
                 name.setPosition(object.m_vPos.x, (object.m_vPos.y - 10));
                 this->m_rRenderWindow->draw(name);
             }
+
             i++;
         }
         ImGui::SFML::Render(*this->m_rRenderWindow);

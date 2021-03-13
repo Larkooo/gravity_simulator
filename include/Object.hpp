@@ -6,7 +6,7 @@
 class Object {
     std::string m_sName;    
     float m_nMass;
-    unsigned short m_iDiameter;
+    uint16_t m_nRadius;
     sf::Color m_eColor;
 
     public:
@@ -17,7 +17,7 @@ class Object {
         sf::Vector3f m_vAcceleration;
         bool m_bDeath = false;
 
-        Object(std::string name, sf::Vector3f position, sf::Vector3f velocity, float mass, short diameter, sf::Color color);
+        Object(std::string name, sf::Vector3f position, sf::Vector3f velocity, float mass, uint16_t radius, sf::Color color);
 
         std::string getName(void);
 
@@ -30,11 +30,12 @@ class Object {
         sf::Vector3f getAcceleration(void);
         void setAcceleration(sf::Vector3f acceleration);
 
-        int getMass(void);
-        unsigned short getDiameter(void);
+        float getMass(void);
+        uint32_t getDiameter(void);
+        uint16_t getRadius(void);
         sf::Color getColor(void);
 
-        sf::Vector3f gravitationalForceTo(Object* object);
+        sf::Vector3f gravitationalForceTo(Object* object, float* scale);
         void destroyObject();
 
 

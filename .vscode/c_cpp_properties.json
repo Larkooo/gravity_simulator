@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "Win32D",
             "includePath": [
                 "include",
                 "src",
@@ -17,7 +17,25 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "compilerPath": "C:/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/g++.exe"
-        }
+        }/*,
+        {
+            "name": "Win32",
+            "includePath": [
+                "include",
+                "src",
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\libs\\glfw\\include",
+                "C:\\Users\\Larko\\Desktop\\development\\cpp_projects\\libs\\glfw\\lib"
+            ],
+            "defines": [
+                "SFML_STATIC",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.18362.0",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "compilerPath": "C:/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/g++.exe"
+        }*/
     ],
     "version": 4
 }

@@ -37,7 +37,7 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
         dRpc.startTimestamp = this->getInitTs();
         dRpc.state = "Gravity SIM";
         char buffer[128];
-        sprintf(buffer, "FPS : %f | Objects : %o", 0, this->getObjectsSize());
+        sprintf(buffer, "FPS : %f | Objects : %o", 0, this->getObjectsSize());
         dRpc.details = buffer;
         dRpc.largeImageKey = "sardge";
         dRpc.instance = 0;
@@ -84,6 +84,12 @@ Window::Window(sf::RenderWindow* renderWindow, std::vector<Object>* objects) {
                 renderWindow->close();
             }
         }
+
+        //int willDieCount = 0;
+        //for(auto& obj : *objects) {
+        //    if(obj.m_bDeath) willDieCount++;
+        //}
+        //if(willDieCount > 1) std::printf("%i\n", willDieCount);
 
         this->m_dDrawer.draw(&deltaClock, &m_vFrametimes, m_vObjects);
 
